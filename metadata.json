@@ -1,0 +1,10 @@
+{
+  "name": "VoxReel AI",
+  "description": "Short-video social experience and intelligent voice-controlled AI assistant with genuine application launching and study mode.",
+  "requestFramePermissions": [
+    "microphone"
+  ],
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}

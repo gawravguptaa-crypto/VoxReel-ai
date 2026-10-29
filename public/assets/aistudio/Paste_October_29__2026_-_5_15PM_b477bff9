@@ -1,0 +1,949 @@
+# PRODUCT REQUIREMENTS DOCUMENT (PRD)
+## Product Name: VoxReel AI
+
+**Document Version:** 1.0  
+**Platform:** Android  
+**Product Type:** Social Media, Short-Video Experience and AI Voice Assistant  
+**Document Language:** English  
+**AI Conversation Language:** Hindi, Hinglish, English, or the user's preferred language  
+**Status:** Development Specification — MVP
+
+---
+
+# 1. Product Vision
+
+VoxReel AI is an Android application that combines a short-video experience with an intelligent, voice-controlled AI assistant. The application is designed to help users watch content, open their installed applications using voice commands, ask questions, receive assignment assistance, and interact with AI without unnecessary interruptions.
+
+The product must prioritize user control. The AI must not initiate conversations, speak randomly, interrupt videos, or perform actions without a clear user request.
+
+The application must use genuine Android application launching capabilities and official third-party APIs wherever available. It must not use fake integrations, simulated external applications, fabricated API responses, or misleading functionality.
+
+# 2. Problem Statement
+
+Students and young users frequently switch between social media, messaging applications, educational resources, and AI assistants. This creates unnecessary friction when they want to watch content, ask a question, complete an assignment, or open another application.
+
+VoxReel AI aims to reduce this friction through a unified interface and an on-demand voice assistant.
+
+The product addresses these problems:
+
+1. Users need a convenient way to open installed applications using voice commands.
+2. Students need quick access to AI-powered explanations and assignment assistance.
+3. Users want to interact with AI while using the application without receiving unwanted speech.
+4. Users may prefer Hindi, Hinglish, English, or another supported language for voice interactions.
+5. Users need transparent controls over microphone access, privacy, AI responses, and external application launching.
+
+# 3. Product Goals
+
+- Provide a working Android application with a clean, modern interface.
+- Support voice-based interaction through an explicit microphone control.
+- Open real installed applications such as Instagram, Facebook, WhatsApp, YouTube, Google Maps, and Chrome when requested.
+- Provide conversational AI assistance on demand.
+- Support educational questions, assignment explanations, and general learning.
+- Respond in the language used by the user whenever that language is supported.
+- Avoid unsolicited AI speech and unnecessary notifications.
+- Integrate third-party services only through legitimate APIs and supported Android capabilities.
+- Provide clear error messages when an application, permission, API, or network connection is unavailable.
+
+# 4. Non-Goals and Product Boundaries
+
+The initial release will not:
+
+- Recreate Instagram's proprietary infrastructure.
+- Pretend to provide Instagram's complete consumer Reels feed through an unofficial API.
+- Create fake WhatsApp, Facebook, or Instagram interfaces.
+- Read private messages or control another application without its authorized APIs and permissions.
+- Send messages, make calls, publish posts, or perform purchases without a supported implementation and appropriate user authorization.
+- Listen continuously in the background without a clearly disclosed, permitted, and user-authorized implementation.
+- Speak without a user action or an explicitly enabled feature.
+- Claim that a third-party API is connected when it is not configured.
+- Claim that an OTP, message, post, or other action succeeded without confirmation from the actual service.
+
+# 5. Target Users
+
+## 5.1 Students
+
+Students who need explanations, programming help, assignment guidance, revision support, and quick access to learning resources.
+
+## 5.2 Social Media Users
+
+Users who want a convenient way to launch social media applications and interact with an AI assistant.
+
+## 5.3 Users Who Prefer Voice Interaction
+
+Users who prefer speaking instead of typing and want the assistant to respond in their chosen language.
+
+## 5.4 General Users
+
+People who want a simple AI assistant for everyday questions, application launching, and supported phone actions.
+
+# 6. Supported Platforms and Technology
+
+## 6.1 Client Application
+
+- Platform: Android.
+- Language: Kotlin.
+- UI framework: Jetpack Compose.
+- Voice input: Android SpeechRecognizer or a compatible supported speech-recognition service.
+- Voice output: Android TextToSpeech.
+- Application launching: Android package intents and supported deep links.
+- Networking: HTTPS-based REST API.
+- Local settings: Android DataStore or an equivalent secure settings mechanism.
+
+## 6.2 Backend
+
+- Language: Python.
+- Framework: FastAPI.
+- AI integration: OpenAI API or another explicitly configured supported AI provider.
+- Data validation: Pydantic.
+- Database: PostgreSQL when persistent user accounts or conversation history are required.
+- Authentication: A secure authentication provider or backend-managed authentication.
+- Deployment: A secure cloud environment with HTTPS.
+
+## 6.3 Development Requirements
+
+- Android Studio and a compatible Android SDK.
+- A configured backend environment.
+- An authorized AI API key.
+- A physical Android device or emulator for testing.
+- Valid API credentials and permissions for any optional third-party integration.
+
+API keys must never be embedded in the Android application source code or committed to a public repository.
+
+# 7. Application Structure
+
+The application will contain the following main sections:
+
+1. Home.
+2. Video Feed.
+3. AI Assistant.
+4. Study Mode.
+5. App Launcher.
+6. Profile and Settings.
+
+The exact navigation layout may use a bottom navigation bar with icons and labels.
+
+The application must clearly distinguish its own features from external applications that it launches.
+
+# 8. Functional Requirements
+
+## 8.1 Onboarding
+
+On first launch, the application must:
+
+1. Display the VoxReel AI name and introduction.
+2. Explain the purpose of voice interaction.
+3. Ask for microphone permission only when voice functionality is requested or onboarding requires it.
+4. Explain that speech recognition may use the device or an external service, depending on configuration.
+5. Allow the user to choose a preferred AI response language.
+6. Provide an option to continue without enabling voice input.
+7. Avoid requesting unrelated permissions.
+
+The application must not request Accessibility Service, SMS, contacts, call-log, or notification access unless a separately justified feature requires it and the user explicitly enables it.
+
+## 8.2 Home Screen
+
+The Home screen must include:
+
+- VoxReel AI branding.
+- A primary voice-assistant button.
+- A shortcut to the video feed.
+- A shortcut to Study Mode.
+- An app-launching section.
+- Access to user settings.
+- A visible indicator when voice input is active.
+- Clear loading, error, and offline states.
+
+The interface must be responsive to different Android screen sizes.
+
+## 8.3 AI Voice Assistant
+
+### 8.3.1 Activation
+
+The user must be able to activate voice input by tapping the microphone button.
+
+The first version must use an explicit user action to start listening. Continuous background listening is not required for the MVP.
+
+After activation, the application must:
+
+1. Display a listening indicator.
+2. Capture the user's speech through the approved speech-recognition mechanism.
+3. Convert speech into text.
+4. Show the recognized text to the user where practical.
+5. Determine whether the request is a supported device action or an AI question.
+6. Execute the appropriate action or send the question to the backend.
+7. Display the result.
+8. Speak the answer only when voice output is enabled and appropriate.
+9. Return to an idle state.
+
+The user must be able to stop listening or cancel a request.
+
+### 8.3.2 Greeting Behavior
+
+When the user says “Hi,” “Hello,” or an equivalent greeting, the AI must provide a short greeting and wait.
+
+Example:
+
+User: “Hi.”
+
+AI: “Hi! Kaise help karun?”
+
+After responding, the AI must not continue talking unless the user speaks again or explicitly requests another action.
+
+A greeting must not automatically launch an application, start a video, or initiate a conversation about an unrelated topic.
+
+### 8.3.3 No Unsolicited Speech
+
+This is a mandatory product requirement.
+
+The AI must not:
+
+- Start speaking without a user request.
+- Interrupt the user while they are speaking.
+- Read out random facts or suggestions.
+- Speak over video audio without an explicitly enabled feature.
+- Automatically start a conversation when the application opens.
+- Repeat the same response unnecessarily.
+- Speak notifications aloud by default.
+
+Voice output must be controlled through a user setting. If voice output is disabled, answers must appear as text.
+
+### 8.3.4 Language Adaptation
+
+The assistant must respond in the language used by the user whenever the selected AI provider supports that language.
+
+Examples:
+
+User: “Instagram kholo.”
+
+AI: “Instagram khol raha hoon.”
+
+User: “Explain polymorphism in C++.”
+
+AI: “Polymorphism is an OOP concept that allows the same interface to represent different forms of behavior.”
+
+User: “Mujhe binary search samjhao.”
+
+AI: “Binary search ek searching algorithm hai jo sorted array mein element ko efficiently find karta hai.”
+
+The app interface and technical documentation may remain in English while AI responses adapt to the user's language.
+
+The language-selection setting must support at least:
+
+- Automatic language detection.
+- Hindi.
+- Hinglish.
+- English.
+
+Additional languages may be added when speech recognition and the AI provider support them reliably.
+
+### 8.3.5 Conversation Context
+
+The assistant may use recent conversation context to answer relevant follow-up questions within the current session.
+
+Example:
+
+User: “What is inheritance in C++?”
+
+AI explains inheritance.
+
+User: “Give me an example.”
+
+AI provides a relevant C++ example.
+
+The assistant must not use unrelated personal data or access external application content unless an authorized feature explicitly provides that information.
+
+Conversation history must not be retained on the server longer than required by the configured privacy policy and user settings.
+
+## 8.4 Voice Command Processing
+
+Voice commands must be processed using an explicit command router.
+
+The router must distinguish between:
+
+1. Application-launching commands.
+2. Supported in-app media controls.
+3. Study Mode commands.
+4. General AI questions.
+5. Unsupported or ambiguous commands.
+
+Supported commands must execute only when the intent is sufficiently clear.
+
+Examples:
+
+| User command | Expected behavior |
+|---|---|
+| “Open Instagram” | Launch the real installed Instagram application |
+| “Open Facebook” | Launch the real installed Facebook application |
+| “Open WhatsApp” | Launch the real installed WhatsApp application |
+| “Open YouTube” | Launch the real installed YouTube application |
+| “Open Chrome” | Launch Chrome if installed |
+| “Open Google Maps” | Launch Google Maps if installed |
+| “Help me with my assignment” | Open or activate Study Mode |
+| “Explain recursion” | Provide an AI explanation |
+| “Stop speaking” | Stop the current speech output |
+| “Cancel” | Cancel the current supported operation |
+| “Next video” | Skip to the next item only when the in-app feed supports this operation |
+
+The command router must not assume that a command succeeded merely because the user spoke it.
+
+## 8.5 Real Application Launching
+
+The application must launch genuine Android applications installed on the device.
+
+For supported applications, the system must:
+
+1. Recognize the application name.
+2. Check whether the application can be launched.
+3. Use the appropriate Android intent or supported deep link.
+4. Open the actual installed application.
+5. Display a helpful message if the application is unavailable.
+
+Example:
+
+User: “WhatsApp kholo.”
+
+System: Checks whether WhatsApp is available.
+
+If available: Opens the actual WhatsApp application.
+
+If unavailable: Displays or speaks, according to user settings, “WhatsApp is not installed on this device.”
+
+The application must not display a fake WhatsApp screen or simulate the external application's functionality.
+
+Application visibility and package-launching behavior must follow current Android platform rules.
+
+## 8.6 Video Feed
+
+The application must provide a video-feed interface that can display supported video content.
+
+Each feed item may contain:
+
+- Video playback.
+- Creator or source information.
+- Caption.
+- Like action, where supported.
+- Share action, where supported.
+- Comments, where supported.
+- Follow action, where supported.
+- Video playback controls.
+- A report option where required.
+
+### 8.6.1 Feed Integration Options
+
+The implementation must use one of the following legitimate approaches:
+
+**Option A: First-Party Feed**
+
+Build a video feed using content uploaded by users or content for which the product has distribution rights. Store media in an authorized object-storage service and use a suitable media-delivery solution.
+
+**Option B: Authorized Third-Party Integration**
+
+Use official APIs, supported SDKs, approved permissions, and the relevant platform's terms. Only display content and perform actions permitted by those APIs.
+
+**Option C: External Application Launch**
+
+If a full in-app feed cannot be implemented through an authorized integration, allow users to launch the genuine Instagram application.
+
+The product must not claim to provide a complete Instagram Reels feed when it only launches Instagram or displays limited authorized content.
+
+### 8.6.2 Instagram Integration Requirements
+
+Instagram integration must use Meta's official developer platform and the permissions available to the registered application.
+
+Before development, the team must verify:
+
+- Whether the intended Instagram account type is supported.
+- Whether the requested API endpoint exists.
+- Whether the required permissions are available.
+- Whether app review or business verification is required.
+- Whether the requested media access and actions are permitted.
+- Whether the integration complies with Meta's current developer policies.
+
+The Instagram API must not be treated as an unrestricted source of every public Reel or a replacement for Instagram's consumer application.
+
+If the required feed is unavailable through approved APIs, the MVP must use the first-party feed or launch the real Instagram application instead.
+
+## 8.7 AI Interaction During Video Viewing
+
+The user must be able to ask the assistant a question while using the application's own video feed.
+
+The expected flow is:
+
+1. The user activates the microphone.
+2. The user asks a question.
+3. The application temporarily pauses or lowers its own video audio when appropriate.
+4. The assistant processes the question.
+5. The answer appears on screen.
+6. The assistant speaks only if voice output is enabled.
+7. The user returns to the video feed.
+
+The application must not automatically listen to or transcribe video audio as if it were the user's command.
+
+The microphone must capture user speech only through a disclosed and authorized recording flow.
+
+When the user opens an external application such as Instagram, VoxReel AI must not claim that it can directly control that application's Reels playback unless a supported and authorized integration exists.
+
+## 8.8 Study Mode
+
+Study Mode is designed to help students understand academic topics.
+
+It must support:
+
+- Topic explanations.
+- Assignment guidance.
+- Concept clarification.
+- Programming questions.
+- Code examples.
+- Debugging guidance.
+- Revision notes.
+- Practice questions.
+- Step-by-step explanations.
+- Follow-up questions.
+
+The user must be able to type a question or speak it using the microphone.
+
+Example:
+
+User: “Explain function overloading in C++ with code.”
+
+The assistant should provide a clear definition, explanation, and relevant code example.
+
+Study Mode must not claim to have submitted an assignment, uploaded a document, or completed an external task unless that task was actually performed through a supported integration.
+
+The assistant should encourage understanding and should not fabricate citations, exam results, or claims of verified correctness.
+
+## 8.9 App Launcher Screen
+
+The App Launcher must display supported installed applications that the Android operating system permits the app to discover or launch.
+
+Each entry may contain:
+
+- Application name.
+- Application icon, where available.
+- Launch action.
+- Availability status.
+
+The user may tap an entry or use a supported voice command.
+
+If an application is unavailable, the system must explain the limitation and may offer an appropriate store link when available.
+
+The launcher must not collect a list of all installed applications for analytics or advertising purposes without a valid, disclosed reason and appropriate compliance.
+
+## 8.10 Profile and Settings
+
+The settings screen must include:
+
+- Preferred response language.
+- Voice output on/off.
+- Speech rate.
+- Assistant response style, where supported.
+- Microphone permission status.
+- Conversation-history controls.
+- Privacy information.
+- Account controls, if accounts are implemented.
+- Sign-out, where applicable.
+- Data-deletion request or deletion controls, where applicable.
+- Application version and support information.
+
+Voice output must be configurable independently of voice input.
+
+# 9. User Interface Requirements
+
+## 9.1 Visual Design
+
+The design must be modern, accessible, and suitable for students and general users.
+
+Recommended style:
+
+- Dark or light theme support.
+- Clear typography.
+- Rounded cards and controls.
+- Consistent spacing.
+- Simple navigation.
+- High-contrast buttons.
+- Accessible labels and touch targets.
+- A visible microphone state.
+- Loading indicators for AI requests.
+
+The final colors and typography may be refined during UI design, but usability and accessibility must take priority over decorative effects.
+
+## 9.2 Required Screens
+
+### Screen 1: Splash Screen
+
+Displays the VoxReel AI logo and application name.
+
+### Screen 2: Onboarding
+
+Explains the application's purpose, language settings, and voice permissions.
+
+### Screen 3: Home
+
+Displays shortcuts to the voice assistant, video feed, Study Mode, and App Launcher.
+
+### Screen 4: Voice Assistant
+
+Displays the microphone control, listening status, recognized text, AI response, and cancel/stop controls.
+
+### Screen 5: Video Feed
+
+Displays supported video content and playback controls.
+
+### Screen 6: Study Mode
+
+Displays a text input, microphone control, conversation area, and answer formatting.
+
+### Screen 7: App Launcher
+
+Displays available applications and their launch actions.
+
+### Screen 8: Settings
+
+Displays language, voice, privacy, history, and accessibility settings.
+
+### Screen 9: Error and Permission States
+
+Displays understandable messages for denied permissions, unavailable applications, network errors, and failed AI requests.
+
+# 10. Backend API Requirements
+
+The backend must validate requests, call the configured AI provider, return structured responses, and protect credentials.
+
+The following are proposed application-owned endpoints. They are not third-party endpoints.
+
+## 10.1 Health Check
+
+**Endpoint:** `GET /health`
+
+Purpose: Confirm that the backend is running.
+
+Expected response:
+
+```json
+{
+  "status": "ok"
+}
+```
+
+## 10.2 AI Chat
+
+**Endpoint:** `POST /api/v1/chat`
+
+Purpose: Send a user question to the AI service.
+
+Request:
+
+```json
+{
+  "message": "Explain binary search in simple Hindi",
+  "language": "auto",
+  "session_id": "session-123"
+}
+```
+
+Expected response:
+
+```json
+{
+  "reply": "Binary search ek algorithm hai jo sorted data mein element ko efficiently find karta hai.",
+  "language": "hi",
+  "success": true
+}
+```
+
+The example response is illustrative. Actual output must come from the configured AI provider.
+
+The backend must validate input size, handle provider failures, enforce rate limits, and return safe error messages.
+
+## 10.3 Conversation History
+
+**Endpoint:** `GET /api/v1/history`
+
+Purpose: Retrieve a user's history only when authenticated history storage has been implemented and enabled.
+
+The endpoint must not expose one user's conversations to another user.
+
+## 10.4 Delete Conversation History
+
+**Endpoint:** `DELETE /api/v1/history`
+
+Purpose: Delete the authenticated user's stored conversation history, subject to applicable retention and legal requirements.
+
+The endpoint must verify authentication and authorization before deletion.
+
+## 10.5 Application Commands
+
+Application-launch commands should normally be executed by the Android client because Android is responsible for opening local applications.
+
+The backend may help classify a command, but it must not pretend it has opened a local application.
+
+For example, the backend may return:
+
+```json
+{
+  "intent": "open_app",
+  "app": "instagram",
+  "success": true
+}
+```
+
+This response means the command was classified. It does not mean Instagram was successfully launched.
+
+The Android client must perform the launch and report the actual result.
+
+# 11. AI System Instructions
+
+The backend must use a system instruction equivalent to the following:
+
+“You are the VoxReel AI assistant. Help the user with questions, learning, assignments, and supported application commands. Respond in the language used by the user whenever possible. Keep responses relevant and clear. Do not initiate conversations or generate unsolicited speech. When the user greets you, respond briefly and wait for another request. Never claim that you opened an application, sent a message, changed a setting, or completed an external action unless the client or an authorized service has confirmed that it occurred. Do not invent API integrations. If a requested action is unsupported, explain the limitation clearly and offer an available alternative. Protect user privacy and do not request unnecessary personal information.”
+
+These instructions must be enforced alongside application-level permissions and command validation. A system prompt alone is not a security boundary.
+
+# 12. Data Model
+
+Persistent storage is optional for a basic MVP. If accounts and saved history are implemented, the following logical data entities may be used.
+
+## 12.1 User
+
+- `id`
+- `display_name`, if supplied
+- `email`, if required
+- `preferred_language`
+- `voice_output_enabled`
+- `created_at`
+- `updated_at`
+
+Only necessary information should be stored.
+
+## 12.2 Conversation
+
+- `id`
+- `user_id`
+- `created_at`
+- `updated_at`
+
+## 12.3 Message
+
+- `id`
+- `conversation_id`
+- `role`
+- `content`
+- `created_at`
+
+History storage must be disabled or minimized when the user has not enabled it.
+
+## 12.4 Video
+
+For first-party video content:
+
+- `id`
+- `creator_id`
+- `media_url`
+- `caption`
+- `created_at`
+- `visibility_status`
+
+The system must store or display video content only when it has the appropriate rights and permissions.
+
+# 13. Security and Privacy Requirements
+
+1. All production backend communication must use HTTPS.
+2. AI-provider API keys must remain on the backend.
+3. Secrets must be stored in a secret manager or protected environment configuration.
+4. Authentication tokens must be stored using appropriate platform security mechanisms.
+5. API endpoints must validate input and enforce rate limits.
+6. Sensitive information must not be written to logs unnecessarily.
+7. Microphone access must be permission-based and transparent.
+8. Recording must stop when the user cancels or the active recording session ends.
+9. Users must be informed when audio is processed by an external service.
+10. The application must not collect contacts, SMS, private messages, or call history without a legitimate, separately authorized feature.
+11. Production error messages must not reveal API keys, stack traces, or private user information.
+12. Stored user data must have a documented retention policy.
+13. Account deletion and history deletion must be implemented correctly if those features are offered.
+14. Third-party integrations must comply with the applicable platform terms and privacy requirements.
+
+# 14. Error Handling
+
+The application must handle these scenarios:
+
+| Scenario | Expected behavior |
+|---|---|
+| Microphone permission denied | Explain the permission requirement and offer text input |
+| Speech recognition unavailable | Offer text input or another supported recognition method |
+| No speech detected | Ask the user to try again without repeatedly interrupting |
+| AI backend unavailable | Display a retry option and preserve the user's typed question when appropriate |
+| AI provider error | Show a clear failure message without fabricating an answer |
+| Internet unavailable | Allow supported offline UI and local app-launching functions |
+| Requested app not installed | Explain that the application is unavailable |
+| App launch fails | Report that the launch failed rather than claiming success |
+| Unsupported Instagram API access | Explain the limitation and offer the supported feed or external-app option |
+| Invalid command | Ask for clarification or explain the supported command |
+| User cancels | Stop the current supported operation |
+| Voice output disabled | Display the answer as text |
+| Session expires | Request authentication again when required |
+
+# 15. Performance Requirements
+
+The following are proposed MVP targets and must be verified through testing:
+
+- App launch to usable Home screen: target under 3 seconds on a supported mid-range device.
+- Local application-launch commands: initiate the launch promptly after recognition.
+- Backend response time: target a typical AI response within 5 seconds when the provider and network allow it.
+- UI interactions: remain responsive while network requests run.
+- Video playback: avoid blocking the main UI thread.
+- Failed network requests: support reasonable timeouts and user-initiated retries.
+
+AI response times, speech-recognition quality, and video playback performance depend on device hardware, network conditions, and external services.
+
+# 16. Accessibility Requirements
+
+- Provide readable text and sufficient contrast.
+- Use accessible labels for interactive elements.
+- Do not rely exclusively on color to communicate state.
+- Support Android font scaling.
+- Provide text alternatives for voice-only interactions.
+- Ensure microphone state is visually clear.
+- Provide a way to stop speech output.
+- Make core navigation usable without voice interaction.
+
+# 17. Analytics and Success Metrics
+
+Analytics must be privacy-conscious and must not record raw microphone audio or full conversation content by default.
+
+Potential product metrics include:
+
+- Number of successful onboarding completions.
+- Percentage of voice requests recognized successfully.
+- Application-launch success rate.
+- AI request success rate.
+- Median AI response time.
+- Study Mode usage.
+- Video-feed playback success rate.
+- User-reported crashes and errors.
+- Retention and user satisfaction, where measurement is appropriately consented.
+
+The team must define baselines and targets after initial usability testing. These metrics must not be presented as achieved results before actual measurement.
+
+# 18. Testing Requirements
+
+## 18.1 Unit Testing
+
+Test:
+
+- Command classification.
+- Language selection.
+- Request validation.
+- Backend error handling.
+- Settings persistence.
+- Permission-state handling.
+
+## 18.2 Integration Testing
+
+Test:
+
+- Android client to backend communication.
+- Backend to configured AI provider.
+- Speech recognition to command router.
+- Command router to Android app launching.
+- Text-to-speech start and stop behavior.
+- Authorized video-feed data retrieval.
+
+## 18.3 Device Testing
+
+Test on supported Android versions and multiple screen sizes.
+
+Include devices with:
+
+- Instagram installed.
+- Instagram not installed.
+- WhatsApp installed.
+- WhatsApp not installed.
+- Microphone permission denied.
+- Internet unavailable.
+- Speech recognition unavailable.
+- Voice output disabled.
+
+## 18.4 Privacy and Security Testing
+
+Verify:
+
+- API keys are not present in the APK.
+- Unauthorized users cannot retrieve other users' histories.
+- Microphone use follows permission and disclosure requirements.
+- User cancellation stops recording and speech output.
+- Network errors do not expose private information.
+- History deletion works when history storage is enabled.
+
+## 18.5 Acceptance Tests
+
+The MVP will be accepted only when:
+
+1. The app installs and launches on a supported Android device.
+2. The Home screen and settings work.
+3. A user can type a question and receive an AI answer when the backend is configured.
+4. A user can activate voice input and submit a recognized question.
+5. A greeting produces one short response and then waits.
+6. The assistant does not initiate unsolicited speech.
+7. The assistant follows the configured voice-output setting.
+8. The assistant responds in a supported language appropriate to the user's request.
+9. A supported command launches the actual installed application.
+10. An unavailable application produces a clear error.
+11. The app never falsely reports an unconfirmed action as successful.
+12. Study Mode can answer supported educational questions.
+13. Permission denial and network failures are handled safely.
+14. No fake Instagram or WhatsApp integration is presented as real.
+15. The video feed is accepted only if its selected content source and playback functionality are genuinely implemented.
+
+# 19. Development Phases
+
+## Phase 1: Android Foundation
+
+- Create the Android project.
+- Build the navigation structure.
+- Implement Home, Assistant, Study Mode, App Launcher, and Settings screens.
+- Add permission handling.
+- Add text-based interaction.
+
+**Deliverable:** A navigable Android application with functional basic screens.
+
+## Phase 2: Voice Assistant
+
+- Implement speech recognition.
+- Implement text-to-speech.
+- Implement microphone controls.
+- Add greeting behavior.
+- Add language adaptation.
+- Add stop and cancel controls.
+
+**Deliverable:** A working on-demand voice assistant.
+
+## Phase 3: Application Launching
+
+- Implement the command router.
+- Support launching selected installed applications.
+- Add installation checks and error handling.
+- Test actual launches on Android devices.
+
+**Deliverable:** Real application launching for supported commands.
+
+## Phase 4: AI Backend
+
+- Implement FastAPI endpoints.
+- Configure the AI provider.
+- Secure credentials.
+- Add request validation and rate limits.
+- Add structured error handling.
+- Test the Android-to-backend integration.
+
+**Deliverable:** A working AI backend connected to the Android application.
+
+## Phase 5: Video Feed
+
+- Choose a first-party content feed or an authorized third-party integration.
+- Implement video playback.
+- Add supported feed actions.
+- Implement playback lifecycle handling.
+- Add in-feed assistant access where supported.
+
+**Deliverable:** A genuinely functional video feed using an authorized content source.
+
+## Phase 6: Quality Assurance
+
+- Run unit, integration, device, privacy, and performance tests.
+- Fix defects.
+- Verify all stated acceptance criteria.
+- Prepare release documentation.
+
+**Deliverable:** A tested release candidate.
+
+## Phase 7: Release
+
+- Prepare production backend hosting.
+- Configure HTTPS.
+- Complete required privacy disclosures.
+- Prepare the signed Android release.
+- Complete Play Store requirements if publishing through Google Play.
+
+**Deliverable:** A release-ready Android package, subject to successful testing and applicable store review.
+
+# 20. Deployment Requirements
+
+## Android
+
+- Build a debug APK for development.
+- Test the debug build on a physical device.
+- Create a signed release build only after the release checklist passes.
+- Configure package visibility and application intents according to Android requirements.
+- Remove development-only configuration from production builds.
+
+## Backend
+
+- Deploy FastAPI to a suitable hosting environment.
+- Configure the AI provider's credentials securely.
+- Enable HTTPS.
+- Configure logs, monitoring, and request limits.
+- Set up database access only if persistent data is required.
+- Define backup and deletion policies where data is stored.
+
+## Environment Configuration
+
+Development and production environments must use separate configuration.
+
+A development endpoint such as `http://10.0.2.2:8000/` may be appropriate for a local Android emulator, but it is not a production backend address.
+
+Production must use the real deployed HTTPS endpoint.
+
+# 21. Third-Party Integration Rules
+
+## Instagram
+
+Use only supported Meta developer APIs and approved permissions. Confirm the exact functionality available to the app before committing to an in-app Instagram feed.
+
+## WhatsApp
+
+Opening the installed WhatsApp application is distinct from sending messages or accessing conversations. Message-related functionality must use a supported and authorized mechanism, such as an applicable official API or user-confirmed share flow.
+
+## Facebook
+
+Use official supported APIs for Facebook-specific data and actions. Launching the Facebook app does not grant permission to read its private content.
+
+## YouTube
+
+Use supported Android intents, links, or authorized APIs according to the intended feature.
+
+## AI Provider
+
+Use a configured AI provider through the backend. Handle authentication failures, rate limits, unavailable services, and model errors without pretending that the request succeeded.
+
+# 22. Release Checklist
+
+Before release, verify all of the following:
+
+- [ ] Android project builds successfully.
+- [ ] Backend starts and its health endpoint works.
+- [ ] AI credentials are configured securely.
+- [ ] Voice input works on supported devices.
+- [ ] Voice output can be disabled.
+- [ ] Greeting behavior is correct.
+- [ ] Unsolicited AI speech is disabled.
+- [ ] Language adaptation works for supported languages.
+- [ ] Real application launching works for supported installed apps.
+- [ ] Missing applications are handled correctly.
+- [ ] Study Mode is connected to the real AI backend.
+- [ ] Video content uses a legitimate source.
+- [ ] Instagram integration claims match the implemented API permissions.
+- [ ] Permissions and privacy disclosures are accurate.
+- [ ] Network failures and cancellation are tested.
+- [ ] No API keys are embedded in the Android client.
+- [ ] The release build is signed and tested.
+- [ ] Store policies and required disclosures have been reviewed.
+
+# 23. Definition of Done
+
+VoxReel AI is considered ready for its initial release only when the implemented Android application, backend, supported integrations, privacy controls, and release build have passed the agreed acceptance tests.
+
+A written PRD, UI mockup, starter project, or successful compilation alone does not establish that every feature is implemented or production-ready.
+
+Features that depend on third-party approval, credentials, or unavailable APIs must be clearly marked as pending until the integration has been verified.
+
+**Final Product Principle:** VoxReel AI must do what the user explicitly asks, use real integrations where supported, respond in the user's preferred language, and remain silent whenever the user has not requested a response.
